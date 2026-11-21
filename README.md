@@ -139,6 +139,82 @@ Os resultados esperados de cada caminho foram conferidos executando os dois mét
 
 ---
 
+## Atividades posteriores à Prova 01
+
+| # | Atividade | Pasta | Estado |
+| --- | --- | --- | --- |
+| 5 | TDD — quatro projetos com JUnit 5 | [`SEMANA10_TDD/`](SEMANA10_TDD) | Concluída — 27 testes |
+| 6 | Testes de integração com Spring Boot e MockMvc | [`SEMANA11_teste_integracao_springboot/`](SEMANA11_teste_integracao_springboot) | Concluída — 5 testes |
+
+---
+
+### 5. TDD — Test Driven Development
+
+Quatro projetos Maven independentes. Detalhamento completo em
+[`SEMANA10_TDD/README.md`](SEMANA10_TDD/README.md).
+
+| Projeto | Testes | O que faltava no projeto-base |
+| --- | ---: | --- |
+| `bubblesort-tdd` | 3 | `ordenar()` vazio |
+| `conta-bancaria-tdd` | 6 | `depositar` / `sacar` vazios |
+| `estoque-tdd` | 7 | `adicionarEstoque` / `retirarEstoque` vazios |
+| `carrinho-compras-tdd` | 11 | classe e testes vazios — ciclo TDD completo |
+| **Total** | **27** | |
+
+```bash
+cd SEMANA10_TDD/<projeto> && mvn test
+```
+
+Pontos registrados no relatório da pasta:
+
+- **O RED expôs três falsos positivos** nos projetos-base: `deveManterVetorJaOrdenado`,
+  `produtoDeveIniciarComEstoqueZero` e `naoDeveAdicionarQuantidadeNegativa` passavam
+  mesmo com os métodos vazios, porque esperavam exatamente o estado inicial.
+- **O carrinho foi construído requisito por requisito**, com o RED de cada um registrado
+  — de erro de compilação (`cannot find symbol: method getTotal()`) a falha de asserção
+  (`expected: <540.0> but was: <600.0>`).
+- **Requisito 5 do carrinho** (preço negativo), deixado em aberto pelo enunciado, foi
+  resolvido com `IllegalArgumentException` em vez de silêncio; a justificativa está no
+  README da pasta.
+- **Fronteiras do desconto** testadas em `499,99` / `500,00` / `500,01`.
+- Três testes foram **acrescentados** para cobrir valores negativos que os casos
+  fornecidos não especificavam. Nenhum caso fornecido foi alterado.
+
+---
+
+### 6. Testes de integração com Spring Boot, JUnit 5 e MockMvc
+
+Atividade avaliada em 10,0 pontos. Relatório completo, com as duas discussões do
+enunciado respondidas, em
+[`exercicios-integracao/README.md`](SEMANA11_teste_integracao_springboot/exercicios-integracao/README.md).
+
+```bash
+cd SEMANA11_teste_integracao_springboot/exercicios-integracao && mvn test
+```
+
+| Caso | Camadas exercitadas | Verificação |
+| --- | --- | --- |
+| CT01 | Service → Repository → H2 | cadastro de `Teclado`/150,00 recebe ID e é relido do banco |
+| CT02 | Service → Repository → H2 | nome em branco lança `IllegalArgumentException` e não persiste |
+| CT03 | Service → Repository → H2 | atualização de preço para 95,00 chega ao banco |
+| CT04 | HTTP → Controller → Service → Repository → H2 | `POST /produtos` devolve 200 e o recurso criado |
+| CT05 | HTTP → Controller → Service → Repository → H2 | `POST` seguido de `GET /produtos/{id}` devolve o mesmo JSON |
+
+Resultado: **5 testes, 5 aprovados** (Java 17.0.18, Spring Boot 3.3.13, H2 em memória).
+`src/main` permaneceu idêntico ao projeto-base — conferido com `diff -r`. Nenhum mock
+substitui `ProdutoRepository` ou `ProdutoService`, conforme a restrição do enunciado.
+
+Dois resultados que valem destaque:
+
+- **A suíte do projeto-base ficava verde vazia.** Com os cinco corpos de teste contendo
+  apenas comentários `TODO`, a execução reportava `Tests run: 5, Failures: 0` e
+  `BUILD SUCCESS`. Um `@Test` sem asserção passa por não lançar exceção.
+- **Verificação por mutação.** Como o verde sozinho não prova nada, três defeitos foram
+  injetados um por vez em `ProdutoService` (validação removida, `atualizarPreco` sem
+  efeito, `cadastrar` sem `save`). Os três foram detectados e o código foi restaurado.
+
+---
+
 ## Aula 02
 
 `aula02/` — primeiro exercício de teste automatizado da disciplina (`CalculadoraFrete` com JUnit).
