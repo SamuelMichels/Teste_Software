@@ -139,12 +139,13 @@ Os resultados esperados de cada caminho foram conferidos executando os dois mét
 
 ---
 
-## Atividades posteriores à Prova 01
+## Atividades da Avaliação Prática — Prova 02
 
 | # | Atividade | Pasta | Estado |
 | --- | --- | --- | --- |
-| 5 | TDD — quatro projetos com JUnit 5 | [`SEMANA10_TDD/`](SEMANA10_TDD) | Concluída — 27 testes |
-| 6 | Testes de integração com Spring Boot e MockMvc | [`SEMANA11_teste_integracao_springboot/`](SEMANA11_teste_integracao_springboot) | Concluída — 5 testes |
+| 5 | SEMANA 10 — TDD nos quatro projetos | [`SEMANA10_TDD/`](SEMANA10_TDD) | Concluída — 27 testes |
+| 6 | SEMANA 11 — testes de integração com Spring Boot e MockMvc | [`SEMANA11_teste_integracao_springboot/`](SEMANA11_teste_integracao_springboot) | Concluída — 5 testes |
+| 7 | SEMANA 14 — teste de usuário final | [`SEMANA14_teste_usuario/`](SEMANA14_teste_usuario) | Concluída — 8 tarefas, 6 achados |
 
 ---
 
@@ -212,6 +213,41 @@ Dois resultados que valem destaque:
 - **Verificação por mutação.** Como o verde sozinho não prova nada, três defeitos foram
   injetados um por vez em `ProdutoService` (validação removida, `atualizarPreco` sem
   efeito, `cadastrar` sem `save`). Os três foram detectados e o código foi restaurado.
+
+---
+
+### 7. Teste de usuário final
+
+Teste de usabilidade do **Mercado Livre** nas etapas de busca, filtragem, comparação e
+simulação de compra até o carrinho. Pacote completo em
+[`SEMANA14_teste_usuario/`](SEMANA14_teste_usuario): plano de teste, roteiro do avaliador,
+planilha de observação, questionário SUS e relatório final.
+
+| Critério de sucesso | Meta | Resultado |
+| --- | --- | --- |
+| Participantes que adicionam ao carrinho | ≥ 90% | 100% (5/5) |
+| Tempo médio total | ≤ 4 min | 3 min 12 s |
+| Escore SUS médio | ≥ 68 | 69,0 — aceitável |
+
+Seis achados de usabilidade classificados por severidade e heurística de Nielsen. As duas
+tarefas de filtragem (filtro Full e ordenação por avaliação) concentram **62% dos erros e 44%
+do tempo**, e são as únicas com insucesso — o fluxo de compra em si teve 100% de sucesso.
+
+O achado de maior severidade foi observado na execução-piloto real: a busca feita sem conta
+conectada foi interrompida por uma tela de verificação (`/gz/account-verification`), com os
+trace-ids registrados no relatório.
+
+O escore SUS é calculado por [`sus/sus.py`](SEMANA14_teste_usuario/sus/sus.py), escrito por
+TDD e coberto por 6 testes:
+
+```bash
+cd SEMANA14_teste_usuario && python sus/sus.py 04-respostas-sus.csv
+cd SEMANA14_teste_usuario/sus && python test_sus.py
+```
+
+As sessões P1–P5 da planilha são **dados simulados para fins didáticos**, identificados na
+coluna `origem` do CSV e declarados no cabeçalho do relatório; a execução-piloto é marcada
+como `piloto-real`.
 
 ---
 
